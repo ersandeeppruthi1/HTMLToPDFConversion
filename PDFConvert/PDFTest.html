@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Generation Test</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h2>Generate PDF from HTML</h2>
+    <textarea id="htmlContent" rows="10" cols="80">
+<html>
+    <body>
+    <h1>Sample HTML for PDF</h1>
+    <p>This is a sample HTML content that will be converted into a PDF.</p>
+    </body>
+</html>
+    </textarea><br><br>
+    <button id="generatePdf">Generate PDF</button>
+
+    <script>
+        $(document).ready(function () {
+            $('#generatePdf').click(function () {
+                var htmlContent = $('#htmlContent').val();
+
+                if ($.trim(htmlContent) === "") {
+                    alert("Please enter HTML content.");
+                    return;
+                }
+
+                $.ajax({
+                    url: '/api/pdf/generatepdf', // Replace with your Web API endpoint
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ html: htmlContent }),
+                    xhrFields: {
+                        responseType: 'blob' // Set response type to 'blob' for file download
+                    },
+                    success: function (response, status, xhr) {
+                        // Create a link to download the blob as a file
+                        var blob = new Blob([response], { type: 'application/pdf' });
+                        var link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = "GeneratedPDF.pdf";
+                        link.click();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                        alert('Error generating PDF: ' + xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
