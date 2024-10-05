@@ -8,6 +8,8 @@
 </head>
 <body>
     <h2>Generate PDF from HTML</h2>
+
+    <label for="htmlContent">HTML Content:</label><br>
     <textarea id="htmlContent" rows="10" cols="80">
 <html>
     <body>
@@ -16,12 +18,17 @@
     </body>
 </html>
     </textarea><br><br>
+
+    <label for="fileName">File Name (optional):</label><br>
+    <input type="text" id="fileName" placeholder="Enter desired PDF file name"><br><br>
+
     <button id="generatePdf">Generate PDF</button>
 
     <script>
         $(document).ready(function () {
             $('#generatePdf').click(function () {
                 var htmlContent = $('#htmlContent').val();
+                var fileName = $('#fileName').val();
 
                 if ($.trim(htmlContent) === "") {
                     alert("Please enter HTML content.");
@@ -32,7 +39,7 @@
                     url: '/api/pdf/generatepdf', // Replace with your Web API endpoint
                     type: 'POST',
                     contentType: 'application/json',
-                    data: JSON.stringify({ html: htmlContent }),
+                    data: JSON.stringify({ html: htmlContent, fileName: fileName }),
                     xhrFields: {
                         responseType: 'blob' // Set response type to 'blob' for file download
                     },
@@ -41,7 +48,7 @@
                         var blob = new Blob([response], { type: 'application/pdf' });
                         var link = document.createElement('a');
                         link.href = window.URL.createObjectURL(blob);
-                        link.download = "GeneratedPDF.pdf";
+                        link.download = fileName ? fileName + ".pdf" : "GeneratedPDF.pdf";
                         link.click();
                     },
                     error: function (xhr, status, error) {
