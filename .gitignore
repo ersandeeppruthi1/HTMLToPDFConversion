@@ -1,3 +1,6 @@
 
 PDFConvert/bin/*
 PDFConvert/obj/*
+packages/*
+.vs/*
+PDFConvert/.vs/*
